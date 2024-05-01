@@ -5,7 +5,16 @@
     "idInstalacion": "1",
     "fecha": "2024-04-24",
     "hora": "09:00",
-    "duracion": "60",
+    "duracion": "90",
+    "importe": "6"
+  },
+  {
+    "ID": "1",
+    "idUsuario": "1",
+    "idInstalacion": "1",
+    "fecha": "2024-04-24",
+    "hora": "11:30",
+    "duracion": "90",
     "importe": "6"
   },
   {
@@ -31,8 +40,8 @@
     "idUsuario": "1",
     "idInstalacion": "2",
     "fecha": "2024-04-24",
-    "hora": "15:30",
-    "duracion": "90",
+    "hora": "11:30",
+    "duracion": "60",
     "importe": "21"
   },
   {
