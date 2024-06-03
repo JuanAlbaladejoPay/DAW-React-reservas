@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ReservaModal } from '../types/types';
 import { useAuthProvider } from '../context/useAuthProvider';
 
@@ -16,81 +17,65 @@ export const ReservationModal = ({
   handleShowEditReservation,
 }: ReservaModalProps) => {
   const { precioHora, fechaYHora, nombreInstalacion, duraciones, idInstalacion, isEdit, reservationId } =
-    reservationData; // Destructuramos el objeto reservationData
+    reservationData;
   const [currentDuration, setCurrentDuration] = useState(duraciones[0]);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const { user } = useAuthProvider();
+  const navigate = useNavigate();
 
-  // Esta función nos permite calcular el importe cada vez que cambie la duración
   const importe = useMemo(() => {
-    return ((currentDuration / 60) * precioHora).toFixed(2) + '€';
+    const calculatedImporte = ((currentDuration / 60) * precioHora).toFixed(2);
+    console.log('Calculated importe:', calculatedImporte);
+    return calculatedImporte;
   }, [currentDuration]);
 
-  // Desestructuramos la fecha y la hora de la reserva para mostrarlas por separado
   const [date, timeWithZone] = fechaYHora.split('T');
   const [time, _] = timeWithZone.split('+');
 
-  // Efecto para cerrar el modal después de 5 segundos si hay un mensaje de éxito
+  const fechaYHoraCorrecta = new Date(`${date}T${time}`).toISOString(); // Ajusta a la zona horaria de España (CEST)
+
   useEffect(() => {
     if (responseMessage && responseMessage.includes('correctamente')) {
       const timer = setTimeout(() => {
         handleCloseModal();
-        handleShowEditReservation && handleShowEditReservation(); // Para comprobar que tenemos la función ya que puede ser tb undefined
+        handleShowEditReservation && handleShowEditReservation();
         handleRefetch();
       }, 5000);
       return () => clearTimeout(timer);
     }
   }, [responseMessage, handleCloseModal]);
 
-  // Función para manejar la reserva
   const handleAddReservation = async () => {
     const reservationDetails = {
       fecha: date,
       hora: time,
       duracion: currentDuration,
-      importe: ((currentDuration / 60) * precioHora).toFixed(2),
+      importe,
       idInstalacion: idInstalacion,
+      fechaYHora: fechaYHoraCorrecta, // Enviamos la fecha y hora en ISO string con la zona horaria correcta
     };
 
-    if (isEdit && reservationId !== null) {
-      fetch(`http://127.0.0.1:8000/api/reservas/edit/${reservationId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user?.token}`,
-        },
-        body: JSON.stringify(reservationDetails),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.ok) {
-            setResponseMessage(data.ok);
-          }
-          if (data.error) {
-            setResponseMessage(data.error);
-          }
-        });
-    }
+    debugger;
+    const endpoint =
+      isEdit && reservationId !== null
+        ? `http://127.0.0.1:8000/api/reservas/edit/${reservationId}`
+        : 'http://127.0.0.1:8000/api/reservas/new';
+    const method = isEdit && reservationId !== null ? 'POST' : 'POST';
 
-    // Si no estamos editanto, es porque creamos una nueva reserva
-    if (isEdit === false) {
-      fetch('http://127.0.0.1:8000/api/reservas/new', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user?.token}`,
-        },
-        body: JSON.stringify(reservationDetails),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.ok) {
-            setResponseMessage(data.ok);
-          }
-          if (data.error) {
-            setResponseMessage(data.error);
-          }
-        });
+    const response = await fetch(endpoint, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user?.token}`,
+      },
+      body: JSON.stringify(reservationDetails),
+    });
+    const data = await response.json();
+    if (data.ok) {
+      setResponseMessage(data.ok);
+      navigate('/checkout', { state: { amount: parseFloat(importe) * 100 } });
+    } else if (data.error) {
+      setResponseMessage(data.error);
     }
   };
 
@@ -106,8 +91,7 @@ export const ReservationModal = ({
 
         <h2 className="text-center">Reserva</h2>
         <p>
-          {' '}
-          <span className="font-bold"> Instalación:</span> {nombreInstalacion}
+          <span className="font-bold">Instalación:</span> {nombreInstalacion}
         </p>
         <p>
           <span className="font-bold">Fecha:</span> {date}
@@ -127,8 +111,7 @@ export const ReservationModal = ({
           </select>
         </div>
         <p>
-          {' '}
-          <span className="font-bold">Importe:</span> {importe}
+          <span className="font-bold">Importe:</span> {importe}€
         </p>
         <button
           onClick={handleAddReservation}

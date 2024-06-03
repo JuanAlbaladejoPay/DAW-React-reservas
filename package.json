@@ -17,6 +17,8 @@
     "@mui/material": "^5.15.15",
     "@react-google-maps/api": "^2.19.3",
     "@react-oauth/google": "^0.12.1",
+    "@stripe/react-stripe-js": "^2.7.1",
+    "@stripe/stripe-js": "^3.4.1",
     "classnames": "^2.5.1",
     "date-fns": "^3.6.0",
     "husky": "^9.0.11",
