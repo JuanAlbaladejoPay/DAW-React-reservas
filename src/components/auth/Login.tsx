@@ -17,7 +17,7 @@ export default function Login({ setShowLogin, setError, showForgottenPassword }:
     const email = (form.email as HTMLInputElement).value;
     const password = (form.password as HTMLInputElement).value;
 
-    fetch('http://localhost:8000/api/login_check', {
+    fetch('http://localhost:9000/api/login_check', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -10,7 +10,7 @@ export default function InstallationsAdmin() {
   const newInstallationInfo = useRef<any>({ id: 1, nombre: '', precioHora: 1 }); // <{ Instalacion }> tb hay que cambiar esto!
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/instalaciones/all', {
+    fetch('http://localhost:9000/api/instalaciones/all', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export default function InstallationsAdmin() {
   const handleEditInstallationRequest = (idInstallation: number) => {
     const { nombre, precioHora } = installationsInfoUpdated.current[idInstallation];
 
-    fetch(`http://localhost:8000/api/instalaciones/edit/${idInstallation}`, {
+    fetch(`http://localhost:9000/api/instalaciones/edit/${idInstallation}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export default function InstallationsAdmin() {
   const handleNewInstallationRequest = () => {
     const { nombre, precioHora } = newInstallationInfo.current;
 
-    fetch('http://localhost:8000/api/instalaciones/new', {
+    fetch('http://localhost:9000/api/instalaciones/new', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export default function InstallationsAdmin() {
 
   const handleDeleteInstallationRequest = (idInstallation: number) => {
     console.log('DELETE: ', idInstallation);
-    fetch(`http://localhost:8000/api/instalaciones/delete/${idInstallation}`, {
+    fetch(`http://localhost:9000/api/instalaciones/delete/${idInstallation}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

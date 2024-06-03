@@ -29,7 +29,7 @@ export default function GoogleLogin({ setIsLoading }: { setIsLoading: (isLoading
   useEffect(() => {
     if (userGoogle) {
       setIsLoading(true);
-      fetch(`http://localhost:8000/api/login-google`, {
+      fetch(`http://localhost:9000/api/login-google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export default function GoogleLogin({ setIsLoading }: { setIsLoading: (isLoading
 
 /* Opción 1 --> Pasarle token al servidor
 if (userGoogle) {
-      fetch("http://localhost:8000/api/login-google", {
+      fetch("http://localhost:9000/api/login-google", {
         method: "POST", // o 'PUT'
         headers: {
           "Content-Type": "application/json",

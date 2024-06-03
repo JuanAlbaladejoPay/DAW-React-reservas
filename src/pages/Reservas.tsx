@@ -16,7 +16,7 @@ export default function Reservas() {
   const { user } = useAuthProvider();
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/instalaciones/all', {
+    fetch('http://localhost:9000/api/instalaciones/all', {
       headers: {
         Authorization: `Bearer ${user?.token}`,
       },
@@ -31,7 +31,7 @@ export default function Reservas() {
         }
       });
 
-    fetch('http://localhost:8000/api/reservas/all', {
+    fetch('http://localhost:9000/api/reservas/all', {
       headers: {
         Authorization: `Bearer ${user?.token}`,
       },
